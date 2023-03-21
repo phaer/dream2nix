@@ -7,6 +7,7 @@
 in {
   imports = [
     ../../drv-parts/mach-nix-xs
+    ../../drv-parts/lock
   ];
 
   deps = {nixpkgs, ...}: {
@@ -16,19 +17,7 @@ in {
   name = "ansible";
   version = "2.7.1";
 
-  mkDerivation = {
-    preUnpack = ''
-      export src=$(ls ${config.mach-nix.pythonSources}/names/${config.name}/*);
-    '';
-  };
-
-  buildPythonPackage = {
-    format = "setuptools";
-
-    pythonImportsCheck = [
-      config.name
-    ];
-  };
+  buildPythonPackage.pythonImportsCheck = [config.name];
 
   mach-nix.pythonSources.fetch-pip = {
     pypiSnapshotDate = "2023-01-01";

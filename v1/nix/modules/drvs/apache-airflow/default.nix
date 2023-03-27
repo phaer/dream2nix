@@ -23,6 +23,7 @@ in {
       git
       fetchFromGitHub
       ;
+    python = nixpkgs.python3;
   };
 
   name = "apache-airflow";

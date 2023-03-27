@@ -15,6 +15,7 @@ in {
       postgresql
       fetchFromGitHub
       ;
+    python = nixpkgs.python3;
   };
 
   name = "tensorflow";

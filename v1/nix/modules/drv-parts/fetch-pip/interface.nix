@@ -81,11 +81,18 @@ in {
         list of requirements.txt files
       '';
     };
-    writeDependencyTree = l.mkOption {
+    writeMetaData = l.mkOption {
       type = t.bool;
       default = true;
       description = ''
-        Write "dependencies.json" to $out, documenting which package depends on which.
+        Write "metadata.json" to $out, documenting which package depends on which.
+      '';
+    };
+    nativeBuildInputs = l.mkOption {
+      type = t.listOf t.package;
+      default = [];
+      description = ''
+        list of nativeBuildInputs
       '';
     };
   };

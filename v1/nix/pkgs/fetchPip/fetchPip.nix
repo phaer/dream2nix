@@ -48,9 +48,9 @@
     '',
   # It's better to not refer to python.pkgs.pip directly, as we want to reduce
   #   the times we have to update the output hash
-  pipVersion ? "23.0",
-  # Write "dependencies.json" to $out, documenting which package depends on which.
-  writeDependencyTree ? true,
+  pipVersion ? "23.0.1",
+  # Write "metadata.json" to $out, including which package depends on which.
+  writeMetaData ? true,
 }: let
   # throws an error if pipDownload is executed with unsafe arguments
   validateArgs = result:
@@ -120,7 +120,7 @@
       ${finalAttrs.onlyBinaryFlags}
       ${finalAttrs.pipVersion}
       ${finalAttrs.pipFlags}
-      ${toString writeDependencyTree}
+      ${toString writeMetaData}
 
       # Include requirements
       # We hash the content, as store paths might change more often
@@ -131,7 +131,6 @@
       # changes with every nixpkgs commit
       ${builtins.readFile finalAttrs.filterPypiResponsesScript}
       ${builtins.readFile finalAttrs.buildScript}
-      ${builtins.readFile finalAttrs.writeDependencyTreeScript}
     '';
 
   invalidationHashShort = finalAttrs:
@@ -175,7 +174,6 @@
     # python scripts
     filterPypiResponsesScript = ./filter-pypi-responses.py;
     buildScript = ./fetchPip.py;
-    writeDependencyTreeScript = ./write-dependency-tree.py;
 
     # the python interpreter used to run the build script
     inherit pythonWithPackaging;
@@ -192,6 +190,7 @@
       pipVersion
       requirementsFiles
       requirementsList
+      writeMetaData
       ;
 
     # prepare flags for `pip download`
@@ -201,7 +200,7 @@
     }";
 
     # - Execute `pip download` through the filtering proxy.
-    # - optionally add a file to the FOD containing the dependency tree
+    # - optionally add a file to the FOD containing metadata of the packages involved
     buildPhase = ''
       $pythonWithPackaging/bin/python $buildScript
     '';

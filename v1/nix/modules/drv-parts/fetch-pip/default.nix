@@ -33,7 +33,6 @@ in {
       inherit
         (nixpkgs)
         buildPackages
-        stdenv
         python3 # only used for proxy script
         ;
       python = nixpkgs.python3;

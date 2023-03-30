@@ -35,25 +35,8 @@ in {
       default = {};
     };
 
-    manualSetupDeps = l.mkOption {
-      type = t.lazyAttrsOf (t.listOf t.str);
-      description = ''
-        Replace the default setup dependencies from nixpkgs for sdist based builds
-      '';
-      default = {};
-      example = {
-        vobject = [
-          "python-dateutil"
-          "six"
-        ];
-        libsass = [
-          "six"
-        ];
-      };
-    };
-
     drvs = l.mkOption {
-      type = t.attrsOf (t.submoduleWith {
+      type = t.lazyAttrsOf (t.submoduleWith {
         modules = [drv-parts.modules.drv-parts.core];
         specialArgs = {inherit packageSets;};
       });
@@ -62,19 +45,12 @@ in {
 
     # INTERNAL
 
-    dists = l.mkOption {
-      type = t.lazyAttrsOf t.str;
-      description = ''
-        Attrs which depend on IFD and therefore should be cached
-      '';
-      internal = true;
-      readOnly = true;
-    };
-
-    dependencyTree = l.mkOption {
+    metadata = l.mkOption {
       type = t.lazyAttrsOf t.anything;
+      # TODO submodule type definition
       description = ''
-        Dependency tree of the python environment
+        metadata of python packages in cfg.pythonSources.
+        depends on IFD and therefore should be cached
       '';
       internal = true;
       readOnly = true;
